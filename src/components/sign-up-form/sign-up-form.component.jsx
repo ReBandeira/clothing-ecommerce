@@ -20,7 +20,7 @@ const SignUpForm = () => {
     };
 
     const handleSubmit= async (event) => {
-        event.preventDefault();  // retira o comportamento padrão do formulário, como se disse-se que vamos lidar com todas as possíbilidades;
+        event.preventDefault();  // retira o comportamento padrão do formulário;
         
          // confirmar se as senhas são iguais
         if(password !== confirmPassword) {
