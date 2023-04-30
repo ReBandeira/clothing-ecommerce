@@ -1,5 +1,5 @@
 import { initializeApp,  } from 'firebase/app';
-import { getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, signInWithPopup, signInWithEmailAndPassword, GoogleAuthProvider, createUserWithEmailAndPassword } from 'firebase/auth';
 import { 
     getFirestore,
     doc, // metódo para pegar uma instancia de document
@@ -34,17 +34,13 @@ const firebaseConfig = {
   // metodo para instaciar o db faristore e poder uusar essa instancia local
   export const db = getFirestore();
 
-  export const createUserDocAuth = async (userAuth) => {
+  export const createUserDocAuth = async (userAuth, additionalInfo) => {
+    
     const userDocRef = doc(db, 'users', userAuth.uid);
 
-    console.log(userDocRef);
-
+  //conferir se o user existe
     const userSnapshot = await getDoc(userDocRef);
-    console.log(userSnapshot)
-
-    //conferir se o user existe
-    console.log(userSnapshot.exists())
-
+    
     //se não exitir, cai nesse blco onde será criado um usuário
 
     if(!userSnapshot.exists()) {
@@ -55,12 +51,27 @@ const firebaseConfig = {
             await setDoc(userDocRef, {
                 displayName,
                 email,
-                createdAt
+                createdAt,
+                ...additionalInfo
             });
         } catch (error) {
-            console.log('error creating te user', error.message)
+            console.log('error creating the user', error.message)
         }
     }
 
     return userDocRef;
   };
+
+  export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    if(!email || !password) return;
+    
+    return await createUserWithEmailAndPassword(auth, email, password)
+  }
+
+  export const signInAuthWithEmailAndPassword = async (email, password) => {
+    if(!email || !password) return;
+    
+    return await signInWithEmailAndPassword(auth, email, password);
+  }
+
+  
